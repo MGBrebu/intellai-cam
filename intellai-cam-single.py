@@ -1,4 +1,6 @@
 import cv2
+import json
+import os
 from deepface import DeepFace
 import datetime
 
@@ -7,17 +9,15 @@ import datetime
 cam = cv2.VideoCapture(0)
 frame_count = 0
 
-# --------------
+# -----------------------------------
 
-def extract():
+def extract(frame):
     try:
         faces = DeepFace.extract_faces(frame, detector_backend = 'mtcnn')
         return faces
     except Exception as e:
-        #print("Error:", e)
-        cv2.imshow("Face Detection", frame)
-        faces = []
-        return faces
+        print("Extraction Error:", e)
+        return []
 
 def analyse():
     try: 
@@ -26,25 +26,38 @@ def analyse():
             actions = ['age', 'gender', 'race'],
             detector_backend = 'mtcnn'
         )
-
-        for face_analysis in analysis:
-            analysis_data = {
-                "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "age": face_analysis["age"],
-                "gender": face_analysis["dominant_gender"],
-                "race": face_analysis["dominant_race"]
-            }
-            try:
-                with open("./analysis/face_analysis.json", "a") as file:
-                    file.write(str(analysis_data) + "\n")
-            except Exception as e:
-                print("File Write Error:", e)
-    
+        return analysis
     except Exception as e:
         #print("Analysis Error:", e)
         analysis = {}
 
-# --------------
+def save_analysis(result, output_file='./analysis/single_face_analysis.json'):
+    # Save selected fields + timestamp
+    if not os.path.exists(output_file):
+        with open(output_file, "w") as f:
+            f.write("[]\n")
+
+    trimmed_analysis = {
+        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "age": result.get("age", "Unknown"),
+        "gender": result.get("dominant_gender", "Unknown"),
+        "race": result.get("dominant_race", "Unknown")
+    }
+
+    try:
+        with open(output_file, "r+") as f:
+            data = json.load(f)
+            data.append(trimmed_analysis)
+            f.seek(0)
+            json.dump(data, f, indent=2)
+            f.truncate()
+        print("Saved:", trimmed_analysis)
+    except Exception as e:
+        print("Error saving analysis:", e)
+
+
+# -----------------------------------
+
 
 while True:
     ret, frame = cam.read()
@@ -55,20 +68,11 @@ while True:
 
     # Run only every 12 frames
     if frame_count % 12 == 0:
-        # Detect Faces
-        faces = extract()
-
-        for face in faces:
-            # Draw bounding box
-            facial_area = face["facial_area"]
-            x = facial_area['x']
-            y = facial_area['y']
-            w = facial_area['w']
-            h = facial_area['h']
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-            # Analyse Faces
-            analyse()
+    
+        analysis = analyse()
+        if isinstance(analysis, list) and len(analysis) > 0:
+            result = analysis[0]
+            save_analysis(result)
 
         # Display the frame
         cv2.imshow("Face Detection", frame)
