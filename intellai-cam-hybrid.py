@@ -62,7 +62,8 @@ class HybridModel:
 
         total_timer.start()
 
-        frame_count = 0
+        frame_counter = 0
+        analysis_counter = 0
 
         cams = [open_cam(cam_id) for cam_id in cam_ids]
         if None in cams:
@@ -82,13 +83,13 @@ class HybridModel:
                     print("Run Model Error: Could not read frame from camera.")
                     continue
 
-                frame_count += 1
+                frame_counter += 1
 
-                if frame_count % frequency == 0:
+                if frame_counter % frequency == 0:
                     analysis_timer.start()
 
                     face_img, faces_coords = self.extract(frame)
-                    # Draw rectangle around face
+                    
                     if face_img is not None:
                         x, y, w, h = faces_coords
                         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
@@ -97,8 +98,9 @@ class HybridModel:
                         if isinstance(analysis, list) and len(analysis) > 0:
                             result = analysis[0]
                             save_analysis(result)
-
-                    print(f"Frame: {frame_count}")
+                            analysis_counter += 1
+                        
+                    print(f"Frame: {frame_counter}")
                     analysis_timer.stop()
                 
                 cv2.imshow(f"Camera Feed {cam}", frame)
@@ -118,8 +120,10 @@ class HybridModel:
         # Performance Summary
         print("\n========= HYBRID  MODEL =========")
         print("====== Performance Summary ======")
-        print(f"\nProcessed Frames: {frame_count}")
-        estimated_fps = frame_count / total_timer.total_time if total_timer.total_time > 0 else 0
+        print(f"Processed Frames: {frame_counter}")
+        print(f"Analysed Frames: {analysis_counter}")
+
+        estimated_fps = frame_counter / total_timer.total_time if total_timer.total_time > 0 else 0
         print(f"Estimated FPS: {estimated_fps:.2f}")
         total_timer.summary(False, False)
         analysis_timer.summary()

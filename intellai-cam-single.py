@@ -46,7 +46,8 @@ class SingleModel:
 
         total_timer.start()
 
-        frame_count = 0
+        frame_counter = 0
+        analysis_counter = 0
 
         cams = [open_cam(cam_id) for cam_id in cam_ids]
         if None in cams:
@@ -66,9 +67,9 @@ class SingleModel:
                     print("Run Model Error: Could not read frame from camera.")
                     continue
 
-                frame_count += 1
+                frame_counter += 1
 
-                if frame_count % frequency == 0:
+                if frame_counter % frequency == 0:
                     analysis_timer.start()
 
                     analysis = self.analyse(frame)
@@ -76,8 +77,9 @@ class SingleModel:
                     if isinstance(analysis, list) and len(analysis) > 0:
                         result = analysis[0]
                         save_analysis(result)
+                        analysis_counter += 1
 
-                    print(f"Frame: {frame_count}")
+                    print(f"Frame: {frame_counter}")
                     analysis_timer.stop()
                     
 
@@ -98,8 +100,10 @@ class SingleModel:
         # Performance Summary
         print("\n========= SINGLE  MODEL =========")
         print("====== Performance Summary ======")
-        print(f"\nProcessed Frames: {frame_count}")
-        estimated_fps = frame_count / total_timer.total_time if total_timer.total_time > 0 else 0
+        print(f"\nProcessed Frames: {frame_counter}")
+        print(f"Analysed Frames: {analysis_counter}")
+
+        estimated_fps = frame_counter / total_timer.total_time if total_timer.total_time > 0 else 0
         print(f"Estimated FPS: {estimated_fps:.2f}")
         total_timer.summary(False, False)
         analysis_timer.summary()
