@@ -1,7 +1,7 @@
 # IntellAI-Cam
 #### AI-Powered Surveillance Software
 
-IntelliCam aims to transform traditional CCTV and surveillance systems using AI facial recognition models. The system detects individuals that pass by cameras under its control, extracts their facial features, and stores them in an easily searchable database. An individual's database entry includes a saved snapshot of their likeness, feature keywords such as perceived age, gender and race, and number of visits to the premises.
+IntellAI-Cam aims to transform traditional CCTV and surveillance systems using AI facial recognition models. The system detects individuals that pass by cameras under its control, extracts their facial features, and stores them in an easily searchable database. An individual's database entry includes a saved snapshot of their likeness, feature keywords such as perceived age, gender and race, and number of visits to the premises.
 
 ### Installation
 ~
