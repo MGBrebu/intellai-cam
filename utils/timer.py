@@ -17,6 +17,11 @@ class Timer:
             raise RuntimeError("Timer is already running. Call stop() before starting again.")
         self.start_time = time.perf_counter()
 
+    def get_time(self):
+        if self.start_time is None:
+            raise RuntimeError("Timer is not running. Call start() before getting time.")
+        return time.perf_counter() - self.start_time
+
     def stop(self):
         if self.start_time is None:
             raise RuntimeError("Timer is not running. Call start() before stopping.")
@@ -27,7 +32,7 @@ class Timer:
         self.start_time = None
 
         if self.verbose and self.label:
-            print(f"[{self.label}] Run {self.call_count}: {duration:.4f} seconds")
+            print(f"[T:{self.label}] Run {self.call_count}: {duration:.4f} seconds")
 
         return duration
     

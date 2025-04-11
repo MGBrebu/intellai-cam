@@ -77,11 +77,16 @@ class SingleModel:
                         result = analysis[0]
                         save_analysis(result)
 
+                    print(f"Frame: {frame_count}")
                     analysis_timer.stop()
                     
 
                 cv2.imshow(f"Camera Feed {cam}", frame)
 
+            if total_timer.get_time() > 20:
+                print("20 seconds elapsed, stopping analysis.")
+                break
+            
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         
@@ -91,12 +96,14 @@ class SingleModel:
         cv2.destroyAllWindows()
 
         # Performance Summary
-        print("\n====== Performance Summary ======")
+        print("\n========= SINGLE  MODEL =========")
+        print("====== Performance Summary ======")
         print(f"\nProcessed Frames: {frame_count}")
+        estimated_fps = frame_count / total_timer.total_time if total_timer.total_time > 0 else 0
+        print(f"Estimated FPS: {estimated_fps:.2f}")
         total_timer.summary(False, False)
         analysis_timer.summary()
-
-
+        
 # -----------------------------------
 
 # Main
