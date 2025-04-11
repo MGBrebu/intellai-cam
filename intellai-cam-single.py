@@ -100,11 +100,11 @@ class SingleModel:
         # Performance Summary
         print("\n========= SINGLE  MODEL =========")
         print("====== Performance Summary ======")
-        print(f"\nProcessed Frames: {frame_counter}")
+        print(f"Processed Frames: {frame_counter}")
         print(f"Analysed Frames: {analysis_counter}")
-
         estimated_fps = frame_counter / total_timer.total_time if total_timer.total_time > 0 else 0
         print(f"Estimated FPS: {estimated_fps:.2f}")
+        
         total_timer.summary(False, False)
         analysis_timer.summary()
         
