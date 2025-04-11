@@ -97,7 +97,7 @@ class HybridModel:
 
                         if isinstance(analysis, list) and len(analysis) > 0:
                             result = analysis[0]
-                            save_analysis(result)
+                            save_analysis(result, './analysis/hybridmodel_analysis.json')
                             analysis_counter += 1
                         
                     print(f"Frame: {frame_counter}")
@@ -124,7 +124,7 @@ class HybridModel:
         print(f"Analysed Frames: {analysis_counter}")
         estimated_fps = frame_counter / total_timer.total_time if total_timer.total_time > 0 else 0
         print(f"Estimated FPS: {estimated_fps:.2f}")
-        
+
         total_timer.summary(False, False)
         analysis_timer.summary()
 
