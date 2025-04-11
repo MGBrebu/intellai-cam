@@ -1,4 +1,7 @@
+/__pycache__/*
+/utils/__pycache__/*
 /venv
+
 /analysis/*
 /test*
 /performance_testing/*
