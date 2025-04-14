@@ -1,6 +1,6 @@
 import cv2
 import os
-import datetime
+from datetime import datetime
 import json
 
 # Open a given camera using OpenCV
@@ -26,7 +26,7 @@ def save_analysis(result, output_file='./analysis/generic_analysis.json'):
             f.write("[]\n")
 
     trimmed_analysis = {
-        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+        "timestamp": datetime.now().isoformat(),
         "age": result.get("age", "Unknown"), "gender": result.get("dominant_gender", "Unknown"), 
         "race": result.get("dominant_race", "Unknown")
     }
