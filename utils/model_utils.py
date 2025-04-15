@@ -41,3 +41,13 @@ def save_analysis(result, output_file='./analysis/generic_analysis.json'):
         print("Analysis Saved:", trimmed_analysis)
     except Exception as e:
         print("Save Analysis Error:", e)
+
+def save_face_img(face_img, output_dir='./analysis/face_images'):
+    # Save face image to a directory
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    timestamp = datetime.now().isoformat().replace(":", "-").replace(".", "-")
+    file_path = os.path.join(output_dir, f"face_{timestamp}.jpg")
+    cv2.imwrite(file_path, face_img)
+    print("Face Image Saved:", file_path)
