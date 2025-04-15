@@ -6,6 +6,7 @@ from deepface import DeepFace
 
 from utils.model_utils import open_cam, save_analysis
 from utils.timer import Timer
+from utils.db_utils import init_db, save_analysis_db
 
 # -----------------------------------
 
@@ -56,14 +57,15 @@ class HybridModel:
         print("Running Model - HYBRID")
         print("----------------------")
 
-        # Initialise timers
+        init_db()
+
         total_timer = Timer(label="Total")
         analysis_timer = Timer(label="Analysis")
 
-        total_timer.start()
-
         frame_counter = 0
         analysis_counter = 0
+
+        total_timer.start()
 
         cams = [open_cam(cam_id) for cam_id in cam_ids]
         if None in cams:
@@ -98,6 +100,7 @@ class HybridModel:
                         if isinstance(analysis, list) and len(analysis) > 0:
                             result = analysis[0]
                             save_analysis(result, './analysis/hybridmodel_analysis.json')
+                            save_analysis_db(result)
                             analysis_counter += 1
                         
                     print(f"Frame: {frame_counter}")
