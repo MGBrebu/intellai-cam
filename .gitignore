@@ -2,7 +2,7 @@
 /utils/__pycache__/*
 /venv
 
-/db/faces.db
+/db/*
 /analysis/*
 /test*
 /performance_testing/*
