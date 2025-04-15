@@ -1,7 +1,7 @@
 import cv2
 from deepface import DeepFace
 
-from utils.model_utils import open_cam, save_analysis
+from utils.model_utils import open_cam, save_analysis, save_face_img
 from utils.timer import Timer
 from utils.db_utils import init_db, save_analysis_db
 
@@ -9,16 +9,6 @@ from utils.db_utils import init_db, save_analysis_db
 # -----------------------------------
 
 class SingleModel:
-    # Deprecated: analyse() includes face detection
-    # Extracts faces from a frame using DeepFace
-    def extract(self, frame):
-        try:
-            faces = DeepFace.extract_faces(frame, detector_backend = 'mtcnn')
-            return faces
-        except Exception as e:
-            print("Extraction Error:", e)
-            return []
-
     # Analyse a frame for faces and their facial attributes (age, gender, race) using DeepFace
     def analyse(self, frame):
         try: 
