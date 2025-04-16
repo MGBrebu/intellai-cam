@@ -6,10 +6,10 @@ import time
 from intellai_single import SingleModel  # Assuming this is the correct import path
 from intellai_hybrid import HybridModel  # Assuming this is the correct import path
 
-class FaceAnalysisApp(tk.Tk):
+class intellai_gui(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Face Analysis Control Center")
+        self.title("IntellAI Cam Manager")
         self.geometry("1000x600")
         self.create_widgets()
 
@@ -71,5 +71,5 @@ class FaceAnalysisApp(tk.Tk):
         self.after(0, lambda: self.info_label.config(text=message))
 
 if __name__ == "__main__":
-    app = FaceAnalysisApp()
+    app = intellai_gui()
     app.mainloop()
