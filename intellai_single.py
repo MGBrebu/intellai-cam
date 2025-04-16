@@ -1,7 +1,7 @@
 import cv2
 from deepface import DeepFace
 
-from utils.model_utils import open_cam, save_analysis, save_face_img
+from utils.model_utils import open_cam, save_analysis
 from utils.timer import Timer
 from utils.db_utils import init_db, save_analysis_db
 
@@ -10,6 +10,8 @@ from utils.db_utils import init_db, save_analysis_db
 
 class SingleModel:
     # Analyse a frame for faces and their facial attributes (age, gender, race) using DeepFace
+    # Includes inbuilt face extraction
+    # Returns list of analysis results
     def analyse(self, frame):
         try: 
             analysis = DeepFace.analyze(
@@ -22,12 +24,14 @@ class SingleModel:
             print("Analysis Error:", e)
             analysis = {}
 
-    # Uses above functions to open the camera, read frames, and analyse faces
+    # Runs the model
+    # Opens camera(s), analyses faces, saves analysis results (json & DB), prints performance summary
     def run_model(self, framerate=24, frequency=24, cam_ids=[0]):
         print("----------------------")
         print("Running Model - SINGLE")
         print("----------------------")
 
+        # INITS
         init_db()
 
         total_timer = Timer(label="Total")
@@ -38,7 +42,7 @@ class SingleModel:
 
         total_timer.start()
 
-        # Open specified cameras and set framerate
+        # OPEN CAMS
         cams = [open_cam(cam_id) for cam_id in cam_ids]
         if None in cams:
             print("Run Model Error: One or more cameras could not be opened.")
@@ -49,7 +53,7 @@ class SingleModel:
         for cam in cams:
             cam.set(cv2.CAP_PROP_FPS, framerate)
 
-        # Main loop for live camera feed and analysis
+        # LIVE CAM FEED
         while True:
             for cam in cams:
                 ret, frame = cam.read()
@@ -59,6 +63,7 @@ class SingleModel:
 
                 frame_counter += 1
 
+                # ANALYSIS & SAVING (every 24 frames)
                 if frame_counter % frequency == 0:
                     analysis_timer.start()
 
@@ -91,7 +96,7 @@ class SingleModel:
         cam.release()
         cv2.destroyAllWindows()
 
-        # Performance Summary
+        # PERFORMANCE SUMMARY
         print("\n========= SINGLE  MODEL =========")
         print("====== Performance Summary ======")
         print(f"Processed Frames: {frame_counter}")

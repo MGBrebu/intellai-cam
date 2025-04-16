@@ -12,22 +12,16 @@ from utils.db_utils import init_db, save_analysis_db
 
 class HybridModel:
     # Extracts faces from a frame using OpenCV Haar cascades
+    # Returns face image and face coords
     def extract(self, frame):
         try:
-            # Load OpenCV Haar cascade
             face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
-            # Convert to grayscale for Haar detection
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            # Detect faces
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
 
             for (x, y, w, h) in faces:
-                # Draw rectangle around face
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-
-                # Crop face region
                 faces_coords = (x, y, w, h)
                 face_img = frame[y:y+h, x:x+w]
 
@@ -38,6 +32,7 @@ class HybridModel:
             return None, None
 
     # Analyse a frame for faces and their facial attributes (age, gender, race) using DeepFace
+    # Returns list of analysis results
     def analyse(self, frame):
         try: 
             analysis = DeepFace.analyze(
@@ -51,12 +46,14 @@ class HybridModel:
             print("Analysis Error:", e)
             analysis = {}
 
-    # Uses above functions to open the camera, read frames, and analyse faces
+    # Runs the model
+    # Opens camera(s), extracts faces, analyses faces, saves analysis results (json & DB), prints performance summary
     def run_model(self, framerate=24, frequency=24, cam_ids=[0]):
         print("----------------------")
         print("Running Model - HYBRID")
         print("----------------------")
 
+        # INITS
         init_db()
 
         total_timer = Timer(label="Total")
@@ -67,6 +64,7 @@ class HybridModel:
 
         total_timer.start()
 
+        # OPEN CAMS
         cams = [open_cam(cam_id) for cam_id in cam_ids]
         if None in cams:
             print("Run Model Error: One or more cameras could not be opened.")
@@ -74,10 +72,10 @@ class HybridModel:
         if not cams:
             print("Run Model Error: No cameras available.")
             return
-        
         for cam in cams:
             cam.set(cv2.CAP_PROP_FPS, framerate)
 
+        # LIVE CAM FEED
         while True:
             for cam in cams:
                 ret, frame = cam.read()
@@ -87,6 +85,7 @@ class HybridModel:
 
                 frame_counter += 1
 
+                # EXTRACTION, ANALYSIS & SAVING (every 24 frames)
                 if frame_counter % frequency == 0:
                     analysis_timer.start()
 
@@ -120,7 +119,7 @@ class HybridModel:
         cam.release()
         cv2.destroyAllWindows()
 
-        # Performance Summary
+        # PERFORMANCE SUMMARY
         print("\n========= HYBRID  MODEL =========")
         print("====== Performance Summary ======")
         print(f"Processed Frames: {frame_counter}")
