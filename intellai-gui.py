@@ -3,6 +3,7 @@ from tkinter import ttk
 import threading
 import time
 
+from utils.db_utils import get_all_entries
 from intellai_single import SingleModel  # Assuming this is the correct import path
 from intellai_hybrid import HybridModel  # Assuming this is the correct import path
 
@@ -13,34 +14,70 @@ class intellai_gui(tk.Tk):
         self.geometry("1000x600")
         self.create_widgets()
 
-        # Model instances
+        # Initialize model objects
         self.single_model = SingleModel()  # Make sure these classes are instantiated appropriately.
         self.hybrid_model = HybridModel()
 
     def create_widgets(self):
-        # Frame for model controls
+        # MODELS FRAME
         control_frame = ttk.LabelFrame(self, text="Model Controls")
         control_frame.pack(side="top", fill="x", padx=10, pady=5)
 
-        # Buttons for running models
         single_button = ttk.Button(control_frame, text="Run Single Model", command=self.run_single_model)
         single_button.pack(side="left", padx=5)
         hybrid_button = ttk.Button(control_frame, text="Run Hybrid Model", command=self.run_hybrid_model)
         hybrid_button.pack(side="left", padx=5)
 
-        # Frame for live analysis output
+        # ANALYSIS OUTPUT FRAME
         info_frame = ttk.LabelFrame(self, text="Live Analysis Info")
         info_frame.pack(side="top", fill="x", padx=10, pady=5)
         self.info_label = ttk.Label(info_frame, text="Waiting for analysis...")
         self.info_label.pack(padx=5, pady=5)
 
-        # Frame for database browsing (for now, it's just a placeholder table)
+        # DATABASE VIEWER FRAME
         db_frame = ttk.LabelFrame(self, text="Database Viewer")
         db_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
-        self.db_table = ttk.Treeview(db_frame, columns=("ID", "Age", "Gender", "Timestamp"), show="headings")
+
+        refresh_button = ttk.Button(db_frame, text="Refresh DB", command=self.load_db_entries)
+        refresh_button.pack(anchor="ne", padx=5, pady=2)
+
+        self.db_table = ttk.Treeview(db_frame, columns=("ID", "Age", "Gender", "Race", "Timestamp"), show="headings")
         for col in self.db_table["columns"]:
-            self.db_table.heading(col, text=col)
+            self.db_table.heading(col, text=col, command=lambda _col=col: self.sort_by_column(_col, False))
+            if col == "ID":
+                self.db_table.column(col, width=15, anchor="center")
+            else:
+                self.db_table.column(col, anchor="center")
         self.db_table.pack(fill="both", expand=True, padx=5, pady=5)
+
+    def sort_by_column(self, col, descending):
+        # Grab all items and their values for the given column
+        data = [(self.db_table.set(child, col), child) for child in self.db_table.get_children()]
+
+        # Attempt to convert values to appropriate types for sorting
+        try:
+            data.sort(key=lambda t: float(t[0]), reverse=descending)
+        except ValueError:
+            data.sort(reverse=descending)
+
+        # Rearrange items in sorted order
+        for index, (_, child) in enumerate(data):
+            self.db_table.move(child, '', index)
+
+        # Toggle the sort order for next click
+        self.db_table.heading(col, command=lambda: self.sort_by_column(col, not descending))
+
+    def load_db_entries(self):
+        # Clear existing rows
+        for row in self.db_table.get_children():
+            self.db_table.delete(row)
+
+        # Fetch and insert rows
+        rows = get_all_entries()
+        for row in rows:
+            self.db_table.insert("", "end", values=row)
+
+        self.update_info(f"Loaded {len(rows)} entries from database.")
 
     def run_single_model(self):
         # Run the Single Model in a separate thread so the GUI remains responsive.

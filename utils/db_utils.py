@@ -74,15 +74,13 @@ def get_all_entries(db_path=DB_PATH):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
+        cursor.execute("SELECT id, age, gender, race, timestamp FROM face_data ORDER BY timestamp DESC")
+        rows = cursor.fetchall()
+        conn.close()
+        return rows
     except sqlite3.Error as e:
-        print("Database Connection Error:", e)
-        return
-
-    cursor.execute('SELECT * FROM face_data')
-    entries = cursor.fetchall()
-
-    conn.close()
-    return entries
+        print("Database error:", e)
+        return []
 
 # Filter database entries by specified attribute
 def filter_by_attribute(attribute, value, db_path=DB_PATH):
