@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+# DEF: Clear specified file, or all JSON files in a specified folder
 def clear_analysis(analysis_file=None, analysis_folder='./analysis'):
     if analysis_file:
         analysis_path = os.path.join(analysis_folder, analysis_file)

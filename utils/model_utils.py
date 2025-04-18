@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 import json
 
-# Open a given camera using OpenCV
+# DEF: Open a given camera using OpenCV
 # Default camera ID: 0
 # Returns cv2 camera feed object or None if error
 def open_cam(cam_id=0):
@@ -17,7 +17,7 @@ def open_cam(cam_id=0):
         return None
     return cam
 
-# Save an analysis result to a JSON file
+# DEF: Save an analysis result to a JSON file
 # Creates JSON file if it doesn't exist, otherwise appends
 def save_analysis(result, output_file='./analysis/generic_analysis.json'):
     # Save selected fields + timestamp

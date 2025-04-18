@@ -3,7 +3,7 @@ from datetime import datetime
 
 DB_PATH = 'db/faces.db'
 
-# Initialize the database and create the table if it doesn't exist
+# DEF: Initialize the database and create the table if it doesn't exist
 def init_db(db_path='db/faces.db'):
     try:
         conn = sqlite3.connect(db_path)
@@ -26,6 +26,8 @@ def init_db(db_path='db/faces.db'):
     conn.commit()
     conn.close()
 
+# DEF: Clear the database by deleting all entries
+# Only clears entires, DB file remains and IDs are not reset
 def clear_db(db_path='db/faces.db'):
     try:
         conn = sqlite3.connect(db_path)
@@ -38,7 +40,7 @@ def clear_db(db_path='db/faces.db'):
     conn.commit()
     conn.close()
 
-# Save analysis results to the database
+# DEF: Save analysis results to the database
 # An entry includes its own ID, the camera's ID, age, gender, race, timestamp, and an image path (if available)
 def save_analysis_db(attributes, image_path=None, db_path=DB_PATH):
     try:
@@ -69,7 +71,7 @@ def save_analysis_db(attributes, image_path=None, db_path=DB_PATH):
     conn.commit()
     conn.close()
 
-# Grab all database entries
+# DEF: Grab all database entries
 def get_all_entries(db_path=DB_PATH):
     try:
         conn = sqlite3.connect(db_path)
@@ -82,7 +84,7 @@ def get_all_entries(db_path=DB_PATH):
         print("Database error:", e)
         return []
 
-# Filter database entries by specified attribute
+# DEF: Filter database entries by specified attribute
 def filter_entries(gender=None, race=None, min_age=None, max_age=None, db_path=DB_PATH):
     try:
         conn = sqlite3.connect(db_path)

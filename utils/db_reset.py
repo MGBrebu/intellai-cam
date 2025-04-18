@@ -2,6 +2,7 @@ import os
 
 DB_PATH = '/db/faces.db'
 
+# DEF: Reset the database by deleting the DB file
 def reset_db(db_path=DB_PATH):
     if os.path.exists(db_path):
         try:
@@ -14,3 +15,6 @@ def reset_db(db_path=DB_PATH):
     else:   
         print(f"Database does not exist: {db_path}")
         return False
+
+if __name__ == "__main__":
+    reset_db()

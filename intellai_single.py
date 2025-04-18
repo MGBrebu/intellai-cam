@@ -5,11 +5,13 @@ from utils.model_utils import open_cam, save_analysis
 from utils.timer import Timer
 from utils.db_utils import init_db, save_analysis_db
 
-
 # -----------------------------------
 
+# CLASS: Single model implementation for face analysis
+# Uses DeepFace for face detection and analysis
+# Saves analysis to JSON and SQLite database
 class SingleModel:
-    # Analyse a frame for faces and their facial attributes (age, gender, race) using DeepFace
+    # DEF: Analyse a frame for faces and their facial attributes (age, gender, race) using DeepFace
     # Includes inbuilt face extraction
     # Returns list of analysis results
     def analyse(self, frame):
@@ -24,7 +26,7 @@ class SingleModel:
             print("Analysis Error:", e)
             analysis = {}
 
-    # Runs the model
+    # DEF: Runs the model
     # Opens camera(s), analyses faces, saves analysis results (json & DB), prints performance summary
     def run_model(self, framerate=24, frequency=24, cam_ids=[0]):
         print("----------------------")
@@ -78,7 +80,6 @@ class SingleModel:
                     print(f"Frame: {frame_counter}")
                     analysis_timer.stop()
                     
-
                 cv2.imshow(f"Camera Feed {cam}", frame)
 
             # -------------------------------

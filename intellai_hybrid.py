@@ -10,8 +10,11 @@ from utils.db_utils import init_db, save_analysis_db
 
 # -----------------------------------
 
+# CLASS: Hybrid model implementation for face analysis
+# Uses OpenCV (Haar Cascade) for face detection and DeepFace for analysis
+# Saves analysis to JSON and SQLite database
 class HybridModel:
-    # Extracts faces from a frame using OpenCV Haar cascades
+    # DEF: Extracts faces from a frame using OpenCV Haar cascades
     # Returns face image and face coords
     def extract(self, frame):
         try:
@@ -31,7 +34,7 @@ class HybridModel:
             print("Extraction Error:", e)
             return None, None
 
-    # Analyse a frame for faces and their facial attributes (age, gender, race) using DeepFace
+    # DEF: Analyse a frame for faces and their facial attributes (age, gender, race) using DeepFace
     # Returns list of analysis results
     def analyse(self, frame):
         try: 
@@ -46,7 +49,7 @@ class HybridModel:
             print("Analysis Error:", e)
             analysis = {}
 
-    # Runs the model
+    # DEF: Runs the model
     # Opens camera(s), extracts faces, analyses faces, saves analysis results (json & DB), prints performance summary
     def run_model(self, framerate=24, frequency=24, cam_ids=[0]):
         print("----------------------")
