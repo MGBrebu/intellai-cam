@@ -83,17 +83,43 @@ def get_all_entries(db_path=DB_PATH):
         return []
 
 # Filter database entries by specified attribute
-def filter_by_attribute(attribute, value, db_path=DB_PATH):
+def filter_entries(gender=None, race=None, min_age=None, max_age=None, db_path=DB_PATH):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
+
+        query = "SELECT id, age, gender, race, timestamp FROM face_data"
+        filters = []
+        params = []
+
+        if gender and gender.lower() != "all":
+            filters.append("gender = ?")
+            params.append(gender)
+
+        if race and race.lower() != "all":
+            filters.append("race = ?")
+            params.append(race)
+
+        if min_age is not None:
+            filters.append("age >= ?")
+            params.append(min_age)
+
+        if max_age is not None:
+            filters.append("age <= ?")
+            params.append(max_age)
+
+        if filters:
+            query += " WHERE " + " AND ".join(filters)
+
+        query += " ORDER BY timestamp DESC"
+
+        cursor.execute(query, params)
+        results = cursor.fetchall()
+
+        conn.close()
+        return results
+
     except sqlite3.Error as e:
-        print("Database Connection Error:", e)
-        return
+        print("Database error:", e)
+        return []
 
-    query = f'SELECT * FROM face_data WHERE {attribute} = ?'
-    cursor.execute(query, (value,))
-    entries = cursor.fetchall()
-
-    conn.close()
-    return entries
