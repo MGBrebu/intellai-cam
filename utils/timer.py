@@ -49,11 +49,10 @@ class Timer:
     # DEF: Print a summary of the timer object
     # Includes call count, total time, and average time
     def summary(self, print_runs=True, print_avg=True):
-        print(f"\n=== Timer Summary: {self.label or 'Unnamed'} ===")
+        output = f"\n== Timer Summary: {self.label or 'Unnamed'}\n"
         if print_runs:
-            print(f"Runs: {self.call_count}")
-
-        print(f"Time: {self.total_time:.4f} sec")
-
+            output += f"Runs: {self.call_count}\n"
+        output += f"Time: {self.total_time:.4f} sec\n"
         if print_avg:
-            print(f"Average time: {self.average():.4f} sec")
+            output += f"Average time: {self.average():.4f} sec\n"
+        return output.strip()

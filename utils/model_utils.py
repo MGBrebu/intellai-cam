@@ -26,8 +26,9 @@ def save_analysis(result, output_file='./analysis/generic_analysis.json'):
             f.write("[]\n")
 
     trimmed_analysis = {
-        "timestamp": datetime.now().isoformat(),
-        "age": result.get("age", "Unknown"), "gender": result.get("dominant_gender", "Unknown"), 
+        "timestamp": datetime.now().isoformat(), 
+        "age": result.get("age", "Unknown"), 
+        "gender": result.get("dominant_gender", "Unknown"), 
         "race": result.get("dominant_race", "Unknown")
     }
 

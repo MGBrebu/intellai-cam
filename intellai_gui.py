@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 
-from utils.db_utils import get_all_entries, filter_entries
+from utils.db_utils import filter_entries
 from intellai_single import SingleModel
 from intellai_hybrid import HybridModel
 
@@ -10,7 +10,7 @@ class intellai_gui(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("IntellAI Cam Manager")
-        self.geometry("1000x600")
+        self.geometry("1000x900")
         self.create_widgets()
 
         # Initialize model objects
@@ -27,12 +27,23 @@ class intellai_gui(tk.Tk):
         hybrid_button = ttk.Button(control_frame, text="Run Hybrid Model", command=self.run_hybrid_model)
         hybrid_button.pack(side="left", padx=5)
 
-        # FRAME: Analysis Info
-        analysis_info_frame = ttk.LabelFrame(self, text="Analysis Info")
-        analysis_info_frame.pack(side="top", fill="x", padx=10, pady=5)
-        self.analysis_info_label = ttk.Label(analysis_info_frame, text="Waiting for analysis...")
-        self.analysis_info_label.pack(padx=5, pady=5, fill="x")
-        self.analysis_info_label.configure(anchor="center", justify="center")
+        # FRAME: Analysis Section (holds current + previous side-by-side)
+        analysis_section_frame = ttk.Frame(self)
+        analysis_section_frame.pack(fill="x", padx=10, pady=5)
+
+        # INNER FRAME: Current Analysis Info
+        current_frame = ttk.LabelFrame(analysis_section_frame, text="Current Analysis Info")
+        current_frame.pack(side="left", fill="both", expand=True, padx=(0, 5))
+        self.analysis_info_label = ttk.Label(current_frame, text="Waiting for analysis...")
+        self.analysis_info_label.pack(padx=5, pady=5, fill="both", expand=True)
+        self.analysis_info_label.configure(anchor="center", justify="left")
+
+        # INNER FRAME: Previous Analysis Info
+        previous_frame = ttk.LabelFrame(analysis_section_frame, text="Previous Analysis Info")
+        previous_frame.pack(side="left", fill="both", expand=True, padx=(5, 0))
+        self.previous_analysis_label = ttk.Label(previous_frame, text="No previous analysis.")
+        self.previous_analysis_label.pack(padx=5, pady=5, fill="both", expand=True)
+        self.previous_analysis_label.configure(anchor="center", justify="left")
 
         # FRAME: Manager Info
         manager_info_frame = ttk.LabelFrame(self, text="Manager Info")
@@ -145,10 +156,12 @@ class intellai_gui(tk.Tk):
 
     # DEF: Specifies Single Model to the threading function
     def run_single_model(self):
+        self.update_previous_analysis()
         threading.Thread(target=self.run_model_thread, args=("single",), daemon=True).start()
 
     # DEF: Specifies Hybrid Model to the threading function
     def run_hybrid_model(self):
+        self.update_previous_analysis()
         threading.Thread(target=self.run_model_thread, args=("hybrid",), daemon=True).start()
 
     # DEF: Runs specified analysis model in a separate thread
@@ -158,13 +171,12 @@ class intellai_gui(tk.Tk):
 
         try:
             if model_type == "single":
-                result = self.single_model.run_model()
+                result = self.single_model.run_model(update_callback=self.update_analysis_info)
             elif model_type == "hybrid":
-                result = self.hybrid_model.run_model()
+                result = self.hybrid_model.run_model(update_callback=self.update_analysis_info)
             else:
+                self.update_analysis_info("Unknown Model Type")
                 result = "Unknown Model Type"
-            # Once the model completes, update the live info label with the result.
-            self.update_analysis_info(f"Analysis Complete: {result}")
         except Exception as e:
             self.update_analysis_info(f"Error: {str(e)}")
 
@@ -175,6 +187,10 @@ class intellai_gui(tk.Tk):
     # DEF: Updates manager info label
     def update_manager_info(self, message):
         self.after(0, lambda: self.manager_info_label.config(text=message))
+
+    def update_previous_analysis(self):
+        current_analysis = self.analysis_info_label.cget("text")
+        self.after(0, lambda: self.previous_analysis_label.config(text=current_analysis))
 
 if __name__ == "__main__":
     app = intellai_gui()

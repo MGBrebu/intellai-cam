@@ -51,7 +51,7 @@ class HybridModel:
 
     # DEF: Runs the model
     # Opens camera(s), extracts faces, analyses faces, saves analysis results (json & DB), prints performance summary
-    def run_model(self, framerate=24, frequency=24, cam_ids=[0]):
+    def run_model(self, framerate=24, frequency=24, cam_ids=[0], update_callback=None):
         print("----------------------")
         print("Running Model - HYBRID")
         print("----------------------")
@@ -59,6 +59,7 @@ class HybridModel:
         # INITS
         init_db()
 
+        if update_callback: update_callback("Starting Model: HYBRID")
         total_timer = Timer(label="Total")
         analysis_timer = Timer(label="Analysis")
 
@@ -70,10 +71,14 @@ class HybridModel:
         # OPEN CAMS
         cams = [open_cam(cam_id) for cam_id in cam_ids]
         if None in cams:
-            print("Run Model Error: One or more cameras could not be opened.")
+            error = "Run Model Error: One or more cameras could not be opened."
+            if update_callback: update_callback(error)
+            print(error)
             return
         if not cams:
-            print("Run Model Error: No cameras available.")
+            error = "Run Model Error: No cameras available."
+            if update_callback: update_callback(error)
+            print(error)
             return
         for cam in cams:
             cam.set(cv2.CAP_PROP_FPS, framerate)
@@ -83,13 +88,16 @@ class HybridModel:
             for cam in cams:
                 ret, frame = cam.read()
                 if not ret:
-                    print("Run Model Error: Could not read frame from camera.")
+                    error = "Run Model Error: Could not read frame from camera."
+                    if update_callback: update_callback(error)
+                    print(error)
                     continue
 
                 frame_counter += 1
 
                 # EXTRACTION, ANALYSIS & SAVING (every 24 frames)
                 if frame_counter % frequency == 0:
+                    if update_callback: update_callback(f"Processing frame {frame_counter}")
                     analysis_timer.start()
 
                     face_img, faces_coords = self.extract(frame)
@@ -104,15 +112,22 @@ class HybridModel:
                             save_analysis(result, './analysis/hybridmodel_analysis.json')
                             save_analysis_db(result)
                             analysis_counter += 1
+                            if update_callback: 
+                                update_callback(f"Analysis result: Age - {result.get('age')}, Gender - {result.get('dominant_gender')}, Race - {result.get('dominant_gender')}")
                         
                     print(f"Frame: {frame_counter}")
                     analysis_timer.stop()
                 
                 cv2.imshow(f"Camera Feed {cam}", frame)
 
+            # -------------------------------
+            # TESTING - STOP AFTER 20 SECONDS
             if total_timer.get_time() > 20:
-                print("20 seconds elapsed, stopping analysis.")
+                msg = "20 seconds elapsed, stopping analysis."
+                if update_callback: update_callback(msg)
+                print(msg)
                 break
+            # -------------------------------
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -122,16 +137,21 @@ class HybridModel:
         cam.release()
         cv2.destroyAllWindows()
 
-        # PERFORMANCE SUMMARY
-        print("\n========= HYBRID  MODEL =========")
-        print("====== Performance Summary ======")
-        print(f"Processed Frames: {frame_counter}")
-        print(f"Analysed Frames: {analysis_counter}")
+         # PERFORMANCE SUMMARY
+        summary = "\n==== HYBRID  MODEL\n"
+        summary += "== Performance Summary\n"
+        summary += f"Processed Frames: {frame_counter}\n"
+        summary += f"Analysed Frames: {analysis_counter}\n"
         estimated_fps = frame_counter / total_timer.total_time if total_timer.total_time > 0 else 0
-        print(f"Estimated FPS: {estimated_fps:.2f}")
+        summary += f"Estimated FPS: {estimated_fps:.2f}\n"
 
-        total_timer.summary(False, False)
-        analysis_timer.summary()
+        total_summary = total_timer.summary(False, False)
+        analysis_summary = analysis_timer.summary()
+
+        full_summary = summary + "\n" + total_summary + "\n" + analysis_summary
+
+        if update_callback: update_callback(full_summary)
+        print(full_summary)
 
 # -----------------------------------
 
