@@ -1,13 +1,42 @@
-# IntellAI-Cam
+# IntellAI_Cam
 #### AI-Powered Surveillance Software
 
-IntellAI-Cam aims to transform traditional CCTV and surveillance systems using AI facial recognition models. The system detects individuals that pass by cameras under its control, extracts their facial features, and stores them in an easily searchable database. An individual's database entry includes a saved snapshot of their likeness, feature keywords such as perceived age, gender and race, and number of visits to the premises.
+IntellAI_Cam is a CCTV-style camera system which uses [OpenCV](https://pypi.org/project/opencv-python/) and [Deepface](https://github.com/serengil/deepface) to detect and analyse human faces in real time. Analysis results are saved to an SQLite database and are easily searchable through the provided GUI, which also allows running the individual models and displays live analysis info as it is processed.
+
+This system was created to assist in comparing the efficiency and accuracy differences between two possible face recognition and analysis implementations, and as such is not meant to be fully-featured nor used for any real workload. 
 
 ### Installation
-~
+> You **must** have ***Python 3.12*** installed and set as the current interpreter (for this project or globally). Python 3.13 has issues with the TensorFlow packages required.
+
+Clone the repository
+
+```
+git clone https://github.com/your-username/your-project-name.git
+cd your-project-name
+```
+*Optionally*, create a virtual environment
+```
+python -m venv venv
+venv\Scripts\activate
+```
+Install dependencies
+```
+pip install -r requirements.txt
+```
 
 ### Usage
-~
+>The system can be used either through the provided GUI utility, or an individual model can be run manually.
+
+**Recommended** | Run the GUI
+```
+python intellai_gui.py
+```
+Run an individual model
+```
+python intellai_single.py
+OR
+python intellai_hybrid.py
+```
 
 
 -----

@@ -1,7 +1,4 @@
 import cv2
-import json
-import os
-import datetime
 from deepface import DeepFace
 
 from utils.model_utils import open_cam, save_analysis
