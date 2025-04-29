@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 
-from utils.db_utils import filter_entries
+from utils.db_utils import filter_entries, reset_db
 from intellai_single import SingleModel
 from intellai_hybrid import HybridModel
 
@@ -60,13 +60,13 @@ class intellai_gui(tk.Tk):
         filter_frame = ttk.Frame(db_frame)
         filter_frame.pack(anchor="w", fill="x", padx=5, pady=(0, 10))
 
-        # Gender filter
+        # DB Gender filter
         ttk.Label(filter_frame, text="Gender:").pack(side="left")
         self.gender_var = tk.StringVar(value="All")
         gender_filter = ttk.Combobox(filter_frame, textvariable=self.gender_var, values=["All", "Man", "Woman"], state="readonly", width=10)
         gender_filter.pack(side="left", padx=(0, 10))
 
-        # Age filter
+        # DB Age filter
         ttk.Label(filter_frame, text="Min Age:").pack(side="left")
         self.min_age_var = tk.StringVar()
         min_age_entry = ttk.Entry(filter_frame, textvariable=self.min_age_var, width=5)
@@ -77,16 +77,19 @@ class intellai_gui(tk.Tk):
         max_age_entry = ttk.Entry(filter_frame, textvariable=self.max_age_var, width=5)
         max_age_entry.pack(side="left", padx=(0, 10))
 
-        # Race filter
+        # DB Race filter
         ttk.Label(filter_frame, text="Race:").pack(side="left")
         self.race_var = tk.StringVar(value="All")
         race_filter = ttk.Combobox(filter_frame, textvariable=self.race_var, values=["All", "white", "black", "asian", "latino hispanic", "middle eastern", "indian"], state="readonly", width=18)
         race_filter.pack(side="left", padx=(0, 10))
 
-        # Apply filter button
+        # Apply DB filter button
         ttk.Button(filter_frame, text="Apply Filter", command=self.load_db_entries).pack(side="left")
 
-        # Refresh button
+        # Reset DB button
+        ttk.Button(filter_frame, text="Reset DB", command=self.reset_db).pack(side="right")
+
+        # Refresh DB button
         ttk.Button(filter_frame, text="Refresh DB", command=self.load_db_entries).pack(side="right")
 
         # Show database table
@@ -112,6 +115,13 @@ class intellai_gui(tk.Tk):
             self.db_table.move(child, '', index)
 
         self.db_table.heading(col, command=lambda: self.sort_by_column(col, not descending))
+
+    # DEF: Resets the database
+    # Uses db_utils function to delete the database file and reload entries
+    def reset_db(self):
+        reset_db()
+        self.load_db_entries()
+        self.update_manager_info("Database reset.")
 
     # DEF: Loads database entries into the table
     # Uses db_utils functions, gets all entries or filtered entries

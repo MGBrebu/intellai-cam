@@ -1,10 +1,18 @@
 import sqlite3
+import os
 from datetime import datetime
 
 DB_PATH = 'db/faces.db'
 
 # DEF: Initialize the database and create the table if it doesn't exist
 def init_db(db_path='db/faces.db'):
+    if not os.path.exists(db_path):
+        try:
+            os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        except Exception as e:
+            print("DB Directory Creation Error:", e)
+            return
+        
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -39,6 +47,23 @@ def clear_db(db_path='db/faces.db'):
     cursor.execute('DELETE FROM face_data')
     conn.commit()
     conn.close()
+
+# DEF: Reset the database by deleting the DB file
+def reset_db(db_path=DB_PATH):
+    if os.path.exists(db_path):
+        try:
+            os.remove(db_path)
+            print(f"Database reset: {db_path} has been deleted.")
+            return True
+        except Exception as e:
+            print(f"Error deleting database: {e}")
+            return False
+    else:   
+        print(f"Database does not exist: {db_path}")
+        return False
+
+if __name__ == "__main__":
+    reset_db()
 
 # DEF: Save analysis results to the database
 # An entry includes its own ID, the camera's ID, age, gender, race, timestamp, and an image path (if available)

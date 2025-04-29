@@ -22,6 +22,9 @@ def open_cam(cam_id=0):
 def save_analysis(result, output_file='./analysis/generic_analysis.json'):
     # Save selected fields + timestamp
     if not os.path.exists(output_file):
+        # Create the directory if it doesn't exist
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+        # Create an empty JSON file
         with open(output_file, "w") as f:
             f.write("[]\n")
 
