@@ -29,7 +29,7 @@ class Timer:
     # DEF: Stop the timer and return elapsed time
     def stop(self):
         if self.start_time is None:
-            raise RuntimeError("Timer is not running. Call start() before stopping.")
+            return "Timer is not running. Call start() before stopping."
         duration = time.perf_counter() - self.start_time
         self.total_time += duration
         self.call_count += 1
@@ -40,6 +40,13 @@ class Timer:
             print(f"[T:{self.label}] Run {self.call_count}: {duration:.4f} seconds")
 
         return duration
+    
+    # DEF: Reset the timer to initial state without impacting total time, call count, or times
+    def reset(self):
+        self.start_time = None
+        if self.verbose and self.label:
+            print(f"[T:{self.label}] Run {self.call_count}: RESET")
+        return 0.0
     
     # DEF: Get the average time of all runs
     def average(self):
@@ -56,3 +63,7 @@ class Timer:
         if print_avg:
             output += f"Average time: {self.average():.4f} sec\n"
         return output.strip()
+    
+    # DEF: Get the times list
+    def get_times(self):
+        return self.times

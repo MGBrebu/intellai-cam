@@ -111,6 +111,9 @@ class HybridModel:
                             analysis_counter += 1
                             if update_callback: 
                                 update_callback(f"Analysis result: Age - {result.get('age')}, Gender - {result.get('dominant_gender')}, Race - {result.get('dominant_gender')}")
+                    else:
+                        print("No face detected in the frame.")
+                        analysis_timer.reset()
                         
                     print(f"Frame: {frame_counter}")
                     analysis_timer.stop()
@@ -119,12 +122,12 @@ class HybridModel:
 
             # -------------------------------
             # TESTING - STOP AFTER 20 SECONDS
-            if total_timer.get_time() > 20:
-                msg = "20 seconds elapsed, stopping analysis."
-                if update_callback: update_callback(msg)
-                print(msg)
-                break
-            # -------------------------------
+            # if total_timer.get_time() > 20:
+            #     msg = "20 seconds elapsed, stopping analysis."
+            #     if update_callback: update_callback(msg)
+            #     print(msg)
+            #     break
+            # # -------------------------------
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
