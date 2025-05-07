@@ -6,6 +6,8 @@ IntellAI_Cam is a CCTV-style camera system which uses [OpenCV](https://pypi.org/
 This system was created to assist in comparing the efficiency and accuracy differences between two possible face recognition and analysis implementations, and as such is not meant to be fully-featured nor used for any real workload. 
 
 ### Installation
+> This branch only supports analysis using the CPU. For GPU support using **WSL2 and Tensorflow with CUDA support**, use the [wsl](https://github.com/MGBrebu/intellai_cam/tree/wsl) branch. Make sure to follow the relevant (and extensive) installation instructions for the WSL branch.
+
 > You **must** have ***Python 3.12*** installed and set as the current interpreter (for this project or globally). Python 3.13 has issues with the TensorFlow packages required.
 
 Clone the repository
