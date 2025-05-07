@@ -70,11 +70,11 @@ class Timer:
         output += f"Time: {self.total_time:.4f} sec\n"
         if print_runs:
             output += f"Runs: {self.call_count}\n"
-            if self.call_count > 1 & self.success_call_count > 0:
+            if self.success_call_count > 0:
                 output += f"Successful runs: {self.success_call_count}\n"
         if print_avg:
             output += f"Average time: {self.average():.4f} sec\n"
-            if self.call_count > 1 & self.success_call_count > 0:
+            if self.success_call_count > 0:
                 output += f"Average successful time: {self.total_time / self.success_call_count:.4f} sec\n"
         return output.strip()
     
