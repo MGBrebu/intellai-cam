@@ -117,6 +117,11 @@ class SingleModel:
                 break
             if self.terminate_flag:
                 break
+            # if total_timer.get_time() > 20:
+            #     msg = "20 seconds elapsed, stopping analysis."
+            #     if update_callback: update_callback(msg)
+            #     print(msg)
+            #     break
         
         total_timer.stop()
 
