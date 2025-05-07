@@ -13,9 +13,13 @@ class intellai_gui(tk.Tk):
         self.geometry("1000x900")
         self.create_widgets()
 
+        self.terminate_flag = False
+
         # Initialize model objects
         self.single_model = SingleModel()
         self.hybrid_model = HybridModel()
+
+        self.current_thread = None
 
     def create_widgets(self):
         # FRAME: Models
@@ -26,6 +30,8 @@ class intellai_gui(tk.Tk):
         single_button.pack(side="left", padx=5)
         hybrid_button = ttk.Button(control_frame, text="Run Hybrid Model", command=self.run_hybrid_model)
         hybrid_button.pack(side="left", padx=5)
+        stop_button = ttk.Button(control_frame, text="Stop Model", command=self.terminate_model)
+        stop_button.pack(side="left", padx=5)
 
         # FRAME: Analysis Section (holds current + previous side-by-side)
         analysis_section_frame = ttk.Frame(self)
@@ -167,12 +173,28 @@ class intellai_gui(tk.Tk):
     # DEF: Specifies Single Model to the threading function
     def run_single_model(self):
         self.update_previous_analysis()
+
+        # Terminate existing model thread
+        self.terminate_model()
+
         threading.Thread(target=self.run_model_thread, args=("single",), daemon=True).start()
 
     # DEF: Specifies Hybrid Model to the threading function
     def run_hybrid_model(self):
         self.update_previous_analysis()
+
+        # Terminate existing model thread
+        self.terminate_model()
+
         threading.Thread(target=self.run_model_thread, args=("hybrid",), daemon=True).start()
+
+
+    def terminate_model(self):
+        print("called gui terminate")
+        print("Terminating model thread...")
+        self.single_model.terminate()
+        self.hybrid_model.terminate()
+        print("Model thread terminated.")
 
     # DEF: Runs specified analysis model in a separate thread
     def run_model_thread(self, model_type):

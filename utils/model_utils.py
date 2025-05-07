@@ -9,6 +9,7 @@ import json
 def open_cam(cam_id=0):
     try:
         cam = cv2.VideoCapture(cam_id)
+        cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
         if not cam.isOpened():
             print("Open Cam Error: Could not open camera.")
             return None

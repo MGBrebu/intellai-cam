@@ -11,6 +11,13 @@ from utils.db_utils import init_db, save_analysis_db
 # Uses OpenCV (Haar Cascade) for face detection and DeepFace for analysis
 # Saves analysis to JSON and SQLite database
 class HybridModel:
+    def __init__(self):
+        self.terminate_flag = False
+
+    def terminate(self):
+        print("Termination flag set.")
+        self.terminate_flag = True
+
     # DEF: Extracts faces from a frame using OpenCV Haar cascades
     # Returns face image and face coords
     def extract(self, frame):
@@ -54,6 +61,7 @@ class HybridModel:
         print("----------------------")
 
         # INITS
+        self.terminate_flag = False
         init_db()
 
         if update_callback: update_callback("Starting Model: HYBRID")
@@ -118,7 +126,7 @@ class HybridModel:
                     print(f"Frame: {frame_counter}")
                     analysis_timer.stop()
                 
-                cv2.imshow(f"Camera Feed {cam}", frame)
+                #cv2.imshow(f"Camera Feed {cam}", frame)
 
             # -------------------------------
             # TESTING - STOP AFTER 20 SECONDS
@@ -130,6 +138,9 @@ class HybridModel:
             # # -------------------------------
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                self.terminate_flag = True
+                break
+            if self.terminate_flag:
                 break
         
         total_timer.stop()
