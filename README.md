@@ -1,3 +1,5 @@
+### *** WSL2 + Tensorflow+CUDA BRANCH ***
+
 # IntellAI_Cam
 #### AI-Powered Surveillance Software
 
@@ -6,20 +8,26 @@ IntellAI_Cam is a CCTV-style camera system which uses [OpenCV](https://pypi.org/
 This system was created to assist in comparing the efficiency and accuracy differences between two possible face recognition and analysis implementations, and as such is not meant to be fully-featured nor used for any real workload. 
 
 ### Installation
+> This is the **WSL2 + Tensorflow with CUDA support** branch. 
+
+> TF with CUDA installation instructions are [here](https://www.tensorflow.org/install/pip#windows-wsl2). 
+
+> WSL by default does not support USB cameras, the setup instructions I used to add support are [here](https://github.com/ctch3ng/Setting-up-Ubuntu-24.04-LTS-via-WSL-2-for-Google-s-Coral-USB-Accelerator/blob/main/WSL-Kernel-with-Web-Cam-Support.md). ***N.B.*** The resulting /dev/video0 ~ 1 cameras need regular user permissions to be accessed by non-sudo processes *(such as the venv IntellAi is using)*, you can do this using `chmod 777 /dev/video0` and `chmod 777 /dev/video1`.
+
 > You **must** have ***Python 3.12*** installed and set as the current interpreter (for this project or globally). Python 3.13 has issues with the TensorFlow packages required.
 
-Clone the repository
+1. Clone the repository
 
 ```
 git clone https://github.com/your-username/your-project-name.git
 cd your-project-name
 ```
-*Optionally*, create a virtual environment
+2. Create a virtual environment (you can use Conda too)
 ```
 python -m venv venv
 venv\Scripts\activate
 ```
-Install dependencies
+3. Install dependencies
 ```
 pip install -r requirements.txt
 ```
