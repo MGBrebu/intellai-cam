@@ -41,27 +41,37 @@ class Timer:
 
         return duration
     
-    # DEF: Reset the timer to initial state without impacting total time, call count, or times
+    # DEF: Reset the timer to initial state
+    # Adds to call count and overall times list
+    # Does not add to successful call count or successful times list
     def reset(self):
+        duration = time.perf_counter() - self.start_time
         self.start_time = None
+        self.call_count += 1
+        self.times.append(duration)
         if self.verbose and self.label:
             print(f"[T:{self.label}] Run {self.call_count}: RESET")
         return 0.0
     
     # DEF: Get the average time of all runs
     def average(self):
+        avg_success_time = self.total_time / self.success_call_count if self.success_call_count > 0 else 0.0
         avg_time = self.total_time / self.call_count if self.call_count > 0 else 0.0
         return avg_time
     
     # DEF: Print a summary of the timer object
-    # Includes call count, total time, and average time
+    # Includes total time, call count (+successful), and average time (+successful)
     def summary(self, print_runs=True, print_avg=True):
         output = f"\n== Timer Summary: {self.label or 'Unnamed'}\n"
+        output += f"Time: {self.total_time:.4f} sec\n"
         if print_runs:
             output += f"Runs: {self.call_count}\n"
-        output += f"Time: {self.total_time:.4f} sec\n"
+            if self.success_call_count > 0:
+                output += f"Successful runs: {self.success_call_count}\n"
         if print_avg:
             output += f"Average time: {self.average():.4f} sec\n"
+            if self.success_call_count > 0:
+                output += f"Average successful time: {self.total_time / self.success_call_count:.4f} sec\n"
         return output.strip()
     
     # DEF: Get the times list
