@@ -19,7 +19,7 @@ This system was created to assist in comparing the efficiency and accuracy diffe
 1. Clone the repository
 
 ```
-git clone https://github.com/your-username/your-project-name.git
+git clone -b wsl https://github.com/your-username/your-project-name.git
 cd your-project-name
 ```
 2. Create a virtual environment (you can use Conda too)
