@@ -10,18 +10,19 @@ This system was created to assist in comparing the efficiency and accuracy diffe
 
 > You **must** have ***Python 3.12*** installed and set as the current interpreter (for this project or globally). Python 3.13 has issues with the TensorFlow packages required.
 
-Clone the repository
-
+1. Clone the repository
 ```
 git clone https://github.com/your-username/your-project-name.git
 cd your-project-name
 ```
-*Optionally*, create a virtual environment
+
+2. *(OPTIONAL, but highly recommended)*, create a virtual environment
 ```
 python -m venv venv
 venv\Scripts\activate
 ```
-Install dependencies
+
+3. Install dependencies
 ```
 pip install -r requirements.txt
 ```
