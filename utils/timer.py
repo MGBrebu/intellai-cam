@@ -12,7 +12,9 @@ class Timer:
         self.start_time = None
         self.total_time = 0.0
         self.call_count = 0
+        self.success_call_count = 0
         self.times = []
+        self.success_times = []
     
     # DEF: Start a timer
     def start(self):
