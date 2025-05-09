@@ -80,6 +80,7 @@ class SingleModel:
                     analysis = self.analyse(frame)
 
                     if isinstance(analysis, list) and len(analysis) > 0:
+                        print("Face detected in the frame.")
                         result = analysis[0]
                         save_analysis(result, './analysis/singlemodel_analysis.json')
                         save_analysis_db(result)

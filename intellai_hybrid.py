@@ -100,6 +100,8 @@ class HybridModel:
                     face_img, faces_coords = self.extract(frame)
                     
                     if face_img is not None:
+                        print("Face detected in the frame.")
+
                         x, y, w, h = faces_coords
                         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                         analysis = self.analyse(face_img)
