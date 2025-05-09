@@ -118,7 +118,7 @@ class HybridModel:
                     print(f"Frame: {frame_counter}")
                     analysis_timer.stop()
                 
-                cv2.imshow(f"Camera Feed {cam}", frame)
+                cv2.imshow(f"Hybrid Model Feed {cam}", frame)
 
             # -------------------------------
             # TESTING - STOP AFTER 20 SECONDS
